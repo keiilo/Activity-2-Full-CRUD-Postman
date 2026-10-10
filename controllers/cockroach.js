@@ -24,72 +24,69 @@
     SOFTWARE.
 */
 
-
 import { Cockroach } from "../models/Cockroach.js";
 
 const cockroach = {
-// Display index
-index: async (req, res) => {
-res.send("Cockroach Index Page");
-},
+    // Display index
+    index: async (req, res) => {
+        res.send("Cockroach Index Page");
+    },
 
+    // Insert
+    insert: async (req, res) => {
+        try {
+            const {
+                Firstname,
+                LastName,
+                Age,
+                Gender,
+                Type,
+                Hp,
+                Address
+            } = req.body;
 
-// Insert
-insert: async (req, res) => {
-    try {
-        const {
-            Firstname,
-            LastName,
-            Age,
-            Gender,
-            Type,
-            Hp,
-            Address
-        } = req.body;
+            const data = await Cockroach.create({
+                Firstname,
+                LastName,
+                Age,
+                Gender,
+                Type,
+                Hp,
+                Address
+            });
 
-        const data = await Cockroach.create({
-            Firstname,
-            LastName,
-            Age,
-            Gender,
-            Type,
-            Hp,
-            Address
-        });
+            res.status(201).json({
+                success: true,
+                message: "Cockroach added successfully",
+                data
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
 
-        res.status(201).json({
-            success: true,
-            message: "Cockroach added successfully",
-            data
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-},
+  
+    get: async (req, res) => {
+        try {
+            const data = await Cockroach.findAll();
 
-// Retrieve all
-get: async (req, res) => {
-    try {
-        const data = await Cockroach.findAll();
+            res.status(200).json({
+                success: true,
+                data
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    },
 
-        res.status(200).json({
-            success: true,
-            data
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-},
-
-// Update
-update: async (req, res) => {
-    try {
+    // Update 
+    update: async (req, res) => {
         const { id } = req.params;
 
         const data = await Cockroach.findByPk(id);
@@ -103,22 +100,15 @@ update: async (req, res) => {
 
         await data.update(req.body);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Cockroach updated successfully",
             data
         });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
-    }
-},
+    },
 
-// Delete
-delete: async (req, res) => {
-    try {
+    // Delete 
+    delete: async (req, res) => {
         const { id } = req.params;
 
         const data = await Cockroach.findByPk(id);
@@ -132,19 +122,11 @@ delete: async (req, res) => {
 
         await data.destroy();
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Cockroach deleted successfully"
         });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
     }
-}
-
-
 };
 
 export { cockroach };
